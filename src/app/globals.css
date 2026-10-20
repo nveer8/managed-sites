@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * Tenant themes (src/engine/theme/theme-style.ts) set raw palette values as
+ * --p-* custom properties on the site root. The active --c-* tokens below are
+ * derived from those per section tone, and Tailwind utilities read only the
+ * --c-* tokens. Components therefore never know which tenant they render for.
+ */
+
+@theme {
+  /* Start from an empty palette so components can only use semantic tokens. */
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+}
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-line: var(--c-line);
+  --color-primary: var(--c-primary);
+  --color-on-primary: var(--c-on-primary);
+  --color-accent: var(--c-accent);
+  --color-on-accent: var(--c-on-accent);
+
+  --font-display: var(--f-display);
+  --font-body: var(--f-body);
+
+  --radius-control: var(--r-control);
+  --radius-card: var(--r-card);
+  --radius-media: var(--r-media);
+}
+
+/* ---------------------------------------------------------------- tones -- */
+
+.theme-root,
+[data-tone="default"] {
+  --c-bg: var(--p-bg);
+  --c-surface: var(--p-surface);
+  --c-ink: var(--p-ink);
+  --c-muted: var(--p-muted);
+  --c-line: var(--p-line);
+  --c-primary: var(--p-primary);
+  --c-on-primary: var(--p-on-primary);
+  --c-accent: var(--p-accent);
+  --c-on-accent: var(--p-on-accent);
+}
+
+[data-tone="alt"] {
+  --c-bg: var(--p-alt);
+  --c-surface: var(--p-surface);
+  --c-ink: var(--p-ink);
+  --c-muted: var(--p-muted);
+  --c-line: var(--p-line);
+  --c-primary: var(--p-primary);
+  --c-on-primary: var(--p-on-primary);
+  --c-accent: var(--p-accent);
+  --c-on-accent: var(--p-on-accent);
+}
+
+[data-tone="inverse"] {
+  --c-bg: var(--p-inverse);
+  --c-surface: color-mix(in oklab, var(--p-on-inverse) 7%, var(--p-inverse));
+  --c-ink: var(--p-on-inverse);
+  --c-muted: var(--p-inverse-muted);
+  --c-line: color-mix(in oklab, var(--p-on-inverse) 18%, transparent);
+  --c-primary: var(--p-accent);
+  --c-on-primary: var(--p-on-accent);
+  --c-accent: var(--p-accent);
+  --c-on-accent: var(--p-on-accent);
+}
+
+[data-tone="accent"] {
+  --c-bg: var(--p-primary);
+  --c-surface: color-mix(in oklab, var(--p-on-primary) 10%, var(--p-primary));
+  --c-ink: var(--p-on-primary);
+  --c-muted: color-mix(in oklab, var(--p-on-primary) 78%, var(--p-primary));
+  --c-line: color-mix(in oklab, var(--p-on-primary) 22%, transparent);
+  --c-primary: var(--p-on-primary);
+  --c-on-primary: var(--p-primary);
+  --c-accent: var(--p-accent);
+  --c-on-accent: var(--p-on-accent);
+}
+
+[data-tone] {
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+}
+
+/* ----------------------------------------------------------------- base -- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .theme-root {
+    background: var(--c-bg);
+    color: var(--c-ink);
+    font-family: var(--f-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .theme-root :where(h1, h2, h3, .display) {
+    font-family: var(--f-display);
+    font-weight: var(--fw-display);
+    text-transform: var(--tt-display);
+    letter-spacing: var(--ls-display);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  .theme-root :where(p) {
+    text-wrap: pretty;
+  }
+
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 3px solid var(--c-accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------ utilities -- */
+
+@utility container-site {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+@utility section-y {
+  padding-block: var(--section-y);
+}
+
+@utility stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack);
+}
+
+@utility text-h1 {
+  font-size: var(--fs-h1);
+}
+
+@utility text-h2 {
+  font-size: var(--fs-h2);
+}
+
+@utility text-h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+}
+
+@utility text-lead {
+  font-size: clamp(1.075rem, 1rem + 0.35vw, 1.3rem);
+  line-height: 1.55;
+}
+
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+
+  &:focus {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--c-ink);
+    color: var(--c-bg);
+  }
+}
+
+/* ----------------------------------------------------------- components -- */
+
+@layer components {
+  /*
+   * Treatments (button construction, eyebrows, image frames) are driven by
+   * numeric custom properties from themeToCssVariables rather than attribute
+   * selectors, so the nearest theme always wins when themes nest (e.g. a
+   * tenant preview rendered inside the marketing site).
+   */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: 3rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: var(--r-control);
+    font-family: var(--f-body);
+    font-weight: var(--btn-weight, 600);
+    font-size: var(--btn-size, 1rem);
+    text-transform: var(--btn-case, none);
+    letter-spacing: var(--btn-tracking, 0);
+    line-height: 1.2;
+    text-decoration: none;
+    border: 2px solid transparent;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      border-color 150ms ease;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--c-primary);
+    color: var(--c-on-primary);
+  }
+
+  .btn-primary:hover {
+    background: color-mix(in oklab, var(--c-primary) 86%, var(--c-ink));
+  }
+
+  /* --btn-underline: 0 = bordered secondary button, 1 = underlined text link style. */
+  .btn-secondary {
+    background: transparent;
+    color: var(--c-ink);
+    border-color: color-mix(in oklab, var(--c-ink) calc(35% * (1 - var(--btn-underline, 0))), transparent);
+    border-bottom-color: color-mix(in oklab, var(--c-ink) calc(35% + 65% * var(--btn-underline, 0)), transparent);
+    border-radius: calc(var(--r-control) * (1 - var(--btn-underline, 0)));
+    padding-inline: calc(1.4rem - 1.3rem * var(--btn-underline, 0));
+  }
+
+  .btn-secondary:hover {
+    border-bottom-color: var(--c-ink);
+    border-inline-color: color-mix(in oklab, var(--c-ink) calc(100% * (1 - var(--btn-underline, 0))), transparent);
+    border-top-color: color-mix(in oklab, var(--c-ink) calc(100% * (1 - var(--btn-underline, 0))), transparent);
+  }
+
+  /* The mobile call bar always uses bordered buttons for an even tap target. */
+  .mobile-bar {
+    --btn-underline: 0;
+  }
+
+  .btn-lg {
+    min-height: 3.5rem;
+    padding-block: 0.95rem;
+    padding-inline: calc(1.75rem - 1.65rem * var(--btn-underline, 0));
+    font-size: calc(var(--btn-size, 1rem) + 0.0625rem);
+  }
+
+  .btn-primary.btn-lg {
+    padding-inline: 1.75rem;
+  }
+
+  /* Eyebrow labels above headings. --eyebrow-rule is the accent rule width (0 = none). */
+  .eyebrow {
+    display: var(--eyebrow-display, inline-flex);
+    align-items: center;
+    gap: calc(var(--eyebrow-rule, 0px) * 0.375);
+    font-family: var(--f-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: var(--eyebrow-rule, 0px);
+    height: 2px;
+    background: var(--c-accent);
+  }
+
+  /* Image frames. */
+  .media-frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-media);
+    background: var(--art-2);
+  }
+
+  .media-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0.75rem;
+    border: 1px solid color-mix(in oklab, #fff 65%, transparent);
+    border-radius: calc(var(--r-media) * 0.6);
+    opacity: var(--frame-inset, 0);
+    pointer-events: none;
+  }
+
+  .media-frame-offset {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .media-frame-offset::before {
+    content: "";
+    position: absolute;
+    inset: var(--frame-offset, 0px) calc(-1 * var(--frame-offset, 0px)) calc(-1 * var(--frame-offset, 0px)) var(--frame-offset, 0px);
+    background: var(--c-accent);
+    border-radius: var(--r-media);
+    opacity: var(--frame-offset-on, 0);
+    z-index: -1;
+  }
+
+  /* Form controls. */
+  .field-control {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid color-mix(in oklab, var(--c-ink) 28%, transparent);
+    border-radius: var(--r-control);
+    background: var(--c-surface);
+    color: var(--c-ink);
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  .field-control:hover {
+    border-color: color-mix(in oklab, var(--c-ink) 50%, transparent);
+  }
+
+  .field-control[aria-invalid="true"] {
+    border-color: #c0362c;
+    box-shadow: 0 0 0 1px #c0362c;
+  }
+
+  .field-error {
+    color: #b42318;
+  }
+
+  [data-tone="inverse"] .field-error,
+  [data-tone="accent"] .field-error {
+    color: #ffb4a8;
+  }
+
+  /* Prose for long-form service/about copy. */
+  .prose-site > * + * {
+    margin-top: 1.1em;
+  }
+}
